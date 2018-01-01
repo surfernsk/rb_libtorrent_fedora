@@ -1,4 +1,4 @@
-%define gtag libtorrent-1_1_5
+%define gtag libtorrent-1_1_6
 %if 0%{?fedora} || 0%{?rhel} >= 8
 %bcond_without python3
 %else
@@ -16,7 +16,7 @@
 
 
 Name:		rb_libtorrent
-Version:	1.1.5
+Version:	1.1.6
 Release:	1%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
@@ -27,10 +27,7 @@ Source0:	https://github.com/arvidn/libtorrent/releases/download/%{gtag}/libtorre
 Source1:	%{name}-README-renames.Fedora
 Source2:	%{name}-COPYING.Boost
 Source3:	%{name}-COPYING.zlib
-#Patch0:		%{name}-1.0.1-boost_noncopyable.patch
-Patch1:		%{name}-1.1.2-system-tommath.patch
-# https://github.com/chriskohlhoff/asio/issues/184
-#Patch2:		%{name}-1.1.1-asio-ssl-headers.patch
+Patch0:		%{name}-1.1.2-system-tommath.patch
 
 BuildRequires:	asio-devel
 BuildRequires:	boost-devel
@@ -122,7 +119,7 @@ Python applications.
 
 %prep
 %setup -q -n "libtorrent-rasterbar-%{version}"
-%patch1 -p1
+%patch0 -p1
 rm include/libtorrent/tommath* src/mpi.cpp
 sed -i -e 's|include/libtorrent/version.hpp|../include/libtorrent/version.hpp|' configure configure.ac
 
@@ -278,6 +275,9 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 %endif # with python3
 
 %changelog
+* Mon Jan 01 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-1
+- update release - 1.1.6
+
 * Wed Nov 15 2017 Evgeny Lensky <surfernsk@gmail.com> - 1.1.5-1
 - update release 1.1.5
 
