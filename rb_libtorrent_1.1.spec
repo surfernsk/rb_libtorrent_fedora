@@ -27,7 +27,10 @@ Source0:	https://github.com/arvidn/libtorrent/releases/download/%{gtag}/libtorre
 Source1:	%{name}-README-renames.Fedora
 Source2:	%{name}-COPYING.Boost
 Source3:	%{name}-COPYING.zlib
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0f47100ce5cb492871218239737d41aee8836580
 Patch0:		%{name}-1.1.2-system-tommath.patch
 
 BuildRequires:	asio-devel
@@ -277,7 +280,11 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 
 %changelog
 * Mon Jan 01 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-1
+<<<<<<< HEAD
 - update release 1.1.6
+=======
+- update release - 1.1.6
+>>>>>>> 0f47100ce5cb492871218239737d41aee8836580
 
 * Wed Nov 15 2017 Evgeny Lensky <surfernsk@gmail.com> - 1.1.5-1
 - update release 1.1.5
