@@ -14,10 +14,9 @@
 %filter_setup
 %endif
 
-
 Name:		rb_libtorrent
 Version:	1.1.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 Group:		System Environment/Libraries
@@ -27,11 +26,9 @@ Source0:	https://github.com/arvidn/libtorrent/releases/download/%{gtag}/libtorre
 Source1:	%{name}-README-renames.Fedora
 Source2:	%{name}-COPYING.Boost
 Source3:	%{name}-COPYING.zlib
-<<<<<<< HEAD
 
-=======
->>>>>>> 0f47100ce5cb492871218239737d41aee8836580
 Patch0:		%{name}-1.1.2-system-tommath.patch
+Patch1:		%{name}-Fto1_1_7.patch
 
 BuildRequires:	asio-devel
 BuildRequires:	boost-devel
@@ -124,6 +121,8 @@ Python applications.
 %prep
 %setup -q -n "libtorrent-rasterbar-%{version}"
 %patch0 -p1
+%patch1 -p1
+
 rm include/libtorrent/tommath* src/mpi.cpp
 sed -i -e 's|include/libtorrent/version.hpp|../include/libtorrent/version.hpp|' configure configure.ac
 
@@ -279,12 +278,15 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 %endif # with python3
 
 %changelog
+* Wed Jan 17 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-2
+- force fixes from 1.1.7:
+-  fix error handling of unsupported hard-links
+-  fix error handling of merkle torrents
+-  fix tracker connection bind issue for IPv6 trackers
+-  raise auto piece size selection limit
+
 * Mon Jan 01 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-1
-<<<<<<< HEAD
 - update release 1.1.6
-=======
-- update release - 1.1.6
->>>>>>> 0f47100ce5cb492871218239737d41aee8836580
 
 * Wed Nov 15 2017 Evgeny Lensky <surfernsk@gmail.com> - 1.1.5-1
 - update release 1.1.5
