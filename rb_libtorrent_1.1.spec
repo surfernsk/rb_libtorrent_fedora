@@ -16,7 +16,7 @@
 
 Name:		rb_libtorrent
 Version:	1.1.6
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 Group:		System Environment/Libraries
@@ -187,14 +187,14 @@ make V=1 %{?_smp_mflags}
 %check
 pushd build
 cp -Rp ../test/mutable_test_torrents ../test/test_torrents ./test/
-cp ../test/*.{cpp,hpp,py} ./test/
+cp ../test/*.{cpp,hpp,py,gz,txt} ./test/
 make %{?_smp_mflags} check
 popd
 
 %if %{with python3}
 pushd build-python3
 cp -Rp ../test/mutable_test_torrents ../test/test_torrents ./test/
-cp ../test/*.{cpp,hpp,py} ./test/
+cp ../test/*.{cpp,hpp,py,gz,txt} ./test/
 make %{?_smp_mflags} check
 popd
 %endif # with python3
@@ -278,6 +278,9 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 %endif # with python3
 
 %changelog
+* Wed Jan 17 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-3
+- Fix tests-suite fail (Thx Arvid Norberg)
+
 * Wed Jan 17 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-2
 - force fixes from 1.1.7:
 -  fix error handling of unsupported hard-links
