@@ -1,4 +1,4 @@
-%define gtag libtorrent-1_1_6
+%define gtag libtorrent-1_1_7
 %if 0%{?fedora} || 0%{?rhel} >= 8
 %bcond_without python3
 %else
@@ -15,8 +15,8 @@
 %endif
 
 Name:		rb_libtorrent
-Version:	1.1.6
-Release:	3%{?dist}
+Version:	1.1.7
+Release:	1%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 Group:		System Environment/Libraries
@@ -28,7 +28,7 @@ Source2:	%{name}-COPYING.Boost
 Source3:	%{name}-COPYING.zlib
 
 Patch0:		%{name}-1.1.2-system-tommath.patch
-Patch1:		%{name}-Fto1_1_7.patch
+Patch1:		%{name}-upto_6394e7a.patch
 
 BuildRequires:	asio-devel
 BuildRequires:	boost-devel
@@ -122,6 +122,10 @@ Python applications.
 %setup -q -n "libtorrent-rasterbar-%{version}"
 %patch0 -p1
 %patch1 -p1
+
+%if 0%{?fedora} >= 27
+autoreconf -f -i
+%endif
 
 rm include/libtorrent/tommath* src/mpi.cpp
 sed -i -e 's|include/libtorrent/version.hpp|../include/libtorrent/version.hpp|' configure configure.ac
@@ -278,6 +282,9 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 %endif # with python3
 
 %changelog
+* Thu Apr 26 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.7-1
+- update release 1.1.7 with upstream fixes
+
 * Wed Jan 17 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-3
 - Fix tests-suite fail (Thx Arvid Norberg)
 
