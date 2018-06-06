@@ -16,7 +16,7 @@
 
 Name:		rb_libtorrent
 Version:	1.1.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 Group:		System Environment/Libraries
@@ -28,7 +28,7 @@ Source2:	%{name}-COPYING.Boost
 Source3:	%{name}-COPYING.zlib
 
 Patch0:		%{name}-1.1.2-system-tommath.patch
-Patch1:		%{name}-upto_6394e7a.patch
+Patch1:		%{name}-upstream.patch
 
 BuildRequires:	asio-devel
 BuildRequires:	boost-devel
@@ -282,6 +282,9 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 %endif # with python3
 
 %changelog
+* Wed Jun 06 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.7-2
+- add Fix bandwidth allocation (#2810)
+
 * Thu Apr 26 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.7-1
 - update release 1.1.7 with upstream fixes
 
@@ -290,10 +293,10 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 
 * Wed Jan 17 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-2
 - force fixes from 1.1.7:
--  fix error handling of unsupported hard-links
--  fix error handling of merkle torrents
--  fix tracker connection bind issue for IPv6 trackers
--  raise auto piece size selection limit
+- fix error handling of unsupported hard-links
+- fix error handling of merkle torrents
+- fix tracker connection bind issue for IPv6 trackers
+- raise auto piece size selection limit
 
 * Mon Jan 01 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.6-1
 - update release 1.1.6
