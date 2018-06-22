@@ -1,0 +1,11 @@
+--- a/src/settings_pack.cpp	2018-04-09 02:03:18.000000000 -0500
++++ b/src/settings_pack.cpp	2018-05-18 15:38:59.079575019 -0500
+@@ -195,7 +195,7 @@
+ 		SET(no_recheck_incomplete_resume, false, 0),
+ 		SET(anonymous_mode, false, &session_impl::update_anonymous_mode),
+ 		SET(report_web_seed_downloads, true, &session_impl::update_report_web_seed_downloads),
+-		DEPRECATED_SET(rate_limit_utp, false, &session_impl::update_rate_limit_utp),
++		DEPRECATED_SET(rate_limit_utp, true, &session_impl::update_rate_limit_utp),
+ 		SET(announce_double_nat, false, 0),
+ 		SET(seeding_outgoing_connections, true, 0),
+ 		SET(no_connect_privileged_ports, false, &session_impl::update_privileged_ports),

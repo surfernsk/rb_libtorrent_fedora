@@ -16,7 +16,7 @@
 
 Name:		rb_libtorrent
 Version:	1.1.7
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 Group:		System Environment/Libraries
@@ -29,6 +29,7 @@ Source3:	%{name}-COPYING.zlib
 
 Patch0:		%{name}-1.1.2-system-tommath.patch
 Patch1:		%{name}-upstream.patch
+Patch2:		%{name}-1.1.7-rate-limit.patch
 
 BuildRequires:	asio-devel
 BuildRequires:	boost-devel
@@ -122,6 +123,7 @@ Python applications.
 %setup -q -n "libtorrent-rasterbar-%{version}"
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %if 0%{?fedora} >= 27
 autoreconf -f -i
@@ -282,6 +284,9 @@ rm -fv %{buildroot}%{_libdir}/lib*.a
 %endif # with python3
 
 %changelog
+* Fri Jun 22 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.7-3
+- add rate-limit.patch
+
 * Wed Jun 06 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.7-2
 - add Fix bandwidth allocation (#2810)
 
