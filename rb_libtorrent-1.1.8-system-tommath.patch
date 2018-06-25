@@ -1,7 +1,7 @@
-diff -ur libtorrent-rasterbar-1.1.2.orig/include/libtorrent/Makefile.am libtorrent-rasterbar-1.1.2/include/libtorrent/Makefile.am
---- libtorrent-rasterbar-1.1.2.orig/include/libtorrent/Makefile.am	2017-03-01 17:05:27.535849886 +0000
-+++ libtorrent-rasterbar-1.1.2/include/libtorrent/Makefile.am	2017-03-01 17:07:11.823744759 +0000
-@@ -153,11 +153,6 @@
+diff -ruN libtorrent-rasterbar-1.1.8.orig/include/libtorrent/Makefile.am libtorrent-rasterbar-1.1.8/include/libtorrent/Makefile.am
+--- libtorrent-rasterbar-1.1.8.orig/include/libtorrent/Makefile.am	2018-06-25 16:04:14.000000000 +0700
++++ libtorrent-rasterbar-1.1.8/include/libtorrent/Makefile.am	2018-06-25 19:22:54.553872074 +0700
+@@ -154,11 +154,6 @@
    web_peer_connection.hpp      \
    xml_parse.hpp                \
    \
@@ -13,10 +13,10 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/include/libtorrent/Makefile.am libtorre
    aux_/alert_manager_variadic_emplace.hpp \
    aux_/allocating_handler.hpp       \
    aux_/cpuid.hpp                    \
-diff -ur libtorrent-rasterbar-1.1.2.orig/include/libtorrent/Makefile.in libtorrent-rasterbar-1.1.2/include/libtorrent/Makefile.in
---- libtorrent-rasterbar-1.1.2.orig/include/libtorrent/Makefile.in	2017-03-01 17:05:27.535849886 +0000
-+++ libtorrent-rasterbar-1.1.2/include/libtorrent/Makefile.in	2017-03-01 17:07:19.087528484 +0000
-@@ -494,11 +494,6 @@
+diff -ruN libtorrent-rasterbar-1.1.8.orig/include/libtorrent/Makefile.in libtorrent-rasterbar-1.1.8/include/libtorrent/Makefile.in
+--- libtorrent-rasterbar-1.1.8.orig/include/libtorrent/Makefile.in	2018-06-25 17:30:15.000000000 +0700
++++ libtorrent-rasterbar-1.1.8/include/libtorrent/Makefile.in	2018-06-25 19:22:54.554872078 +0700
+@@ -495,11 +495,6 @@
    web_peer_connection.hpp      \
    xml_parse.hpp                \
    \
@@ -28,9 +28,9 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/include/libtorrent/Makefile.in libtorre
    aux_/alert_manager_variadic_emplace.hpp \
    aux_/allocating_handler.hpp       \
    aux_/cpuid.hpp                    \
-diff -ur libtorrent-rasterbar-1.1.2.orig/src/Makefile.am libtorrent-rasterbar-1.1.2/src/Makefile.am
---- libtorrent-rasterbar-1.1.2.orig/src/Makefile.am	2017-03-01 17:05:27.547849529 +0000
-+++ libtorrent-rasterbar-1.1.2/src/Makefile.am	2017-03-01 17:23:14.808417909 +0000
+diff -ruN libtorrent-rasterbar-1.1.8.orig/src/Makefile.am libtorrent-rasterbar-1.1.8/src/Makefile.am
+--- libtorrent-rasterbar-1.1.8.orig/src/Makefile.am	2018-06-25 16:04:14.000000000 +0700
++++ libtorrent-rasterbar-1.1.8/src/Makefile.am	2018-06-25 19:22:54.554872078 +0700
 @@ -92,7 +92,6 @@
    magnet_uri.cpp                  \
    merkle.cpp                      \
@@ -48,9 +48,9 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/src/Makefile.am libtorrent-rasterbar-1.
  
  AM_CPPFLAGS = -DTORRENT_BUILDING_LIBRARY -I$(top_srcdir)/include -I$(top_srcdir)/ed25519/src @DEBUGFLAGS@ @OPENSSL_INCLUDES@
  AM_CFLAGS = -I$(top_srcdir)/ed25519/src -std=c99
-diff -ur libtorrent-rasterbar-1.1.2.orig/src/Makefile.in libtorrent-rasterbar-1.1.2/src/Makefile.in
---- libtorrent-rasterbar-1.1.2.orig/src/Makefile.in	2017-03-01 17:05:27.547849529 +0000
-+++ libtorrent-rasterbar-1.1.2/src/Makefile.in	2017-03-01 23:51:21.715372994 +0000
+diff -ruN libtorrent-rasterbar-1.1.8.orig/src/Makefile.in libtorrent-rasterbar-1.1.8/src/Makefile.in
+--- libtorrent-rasterbar-1.1.8.orig/src/Makefile.in	2018-06-25 17:30:16.000000000 +0700
++++ libtorrent-rasterbar-1.1.8/src/Makefile.in	2018-06-25 19:22:25.329732560 +0700
 @@ -156,7 +156,7 @@
  	http_tracker_connection.cpp i2p_stream.cpp identify_client.cpp \
  	instantiate_connection.cpp ip_filter.cpp ip_voter.cpp \
@@ -69,7 +69,7 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/src/Makefile.in libtorrent-rasterbar-1.
  	part_file.lo pe_crypto.lo performance_counters.lo \
  	peer_connection.lo peer_connection_handle.lo peer_class.lo \
  	peer_class_set.lo piece_picker.lo platform_util.lo \
-@@ -563,7 +563,6 @@
+@@ -649,7 +649,6 @@
    magnet_uri.cpp                  \
    merkle.cpp                      \
    metadata_transfer.cpp           \
@@ -77,7 +77,7 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/src/Makefile.in libtorrent-rasterbar-1.
    natpmp.cpp                      \
    parse_url.cpp                   \
    part_file.cpp                   \
-@@ -629,7 +628,7 @@
+@@ -715,7 +714,7 @@
    $(BUILTIN_CRYPTO_SOURCES)
  
  libtorrent_rasterbar_la_LDFLAGS = -version-info $(INTERFACE_VERSION_INFO)
@@ -86,17 +86,17 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/src/Makefile.in libtorrent-rasterbar-1.
  AM_CPPFLAGS = -DTORRENT_BUILDING_LIBRARY -I$(top_srcdir)/include -I$(top_srcdir)/ed25519/src @DEBUGFLAGS@ @OPENSSL_INCLUDES@
  AM_CFLAGS = -I$(top_srcdir)/ed25519/src -std=c99
  AM_LDFLAGS = @OPENSSL_LDFLAGS@
-@@ -843,7 +842,6 @@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magnet_uri.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/merkle.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/metadata_transfer.Plo@am__quote@
--@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpi.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/natpmp.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packet_buffer.Plo@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_url.Plo@am__quote@
-diff -ur libtorrent-rasterbar-1.1.2.orig/src/pe_crypto.cpp libtorrent-rasterbar-1.1.2/src/pe_crypto.cpp
---- libtorrent-rasterbar-1.1.2.orig/src/pe_crypto.cpp	2017-03-01 17:05:27.548849499 +0000
-+++ libtorrent-rasterbar-1.1.2/src/pe_crypto.cpp	2017-03-01 23:52:21.830525306 +0000
+@@ -929,7 +928,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magnet_uri.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/merkle.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/metadata_transfer.Plo@am__quote@ # am--include-marker
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpi.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/natpmp.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packet_buffer.Plo@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_url.Plo@am__quote@ # am--include-marker
+diff -ruN libtorrent-rasterbar-1.1.8.orig/src/pe_crypto.cpp libtorrent-rasterbar-1.1.8/src/pe_crypto.cpp
+--- libtorrent-rasterbar-1.1.8.orig/src/pe_crypto.cpp	2018-06-25 16:04:14.000000000 +0700
++++ libtorrent-rasterbar-1.1.8/src/pe_crypto.cpp	2018-06-25 19:22:54.555872083 +0700
 @@ -38,7 +38,7 @@
  #include <algorithm>
  
@@ -106,9 +106,9 @@ diff -ur libtorrent-rasterbar-1.1.2.orig/src/pe_crypto.cpp libtorrent-rasterbar-
  }
  
  #include "libtorrent/aux_/disable_warnings_pop.hpp"
-diff -ur libtorrent-rasterbar-1.1.2.orig/test/test_pe_crypto.cpp libtorrent-rasterbar-1.1.2/test/test_pe_crypto.cpp
---- libtorrent-rasterbar-1.1.2.orig/test/test_pe_crypto.cpp	2017-03-01 17:05:27.555849290 +0000
-+++ libtorrent-rasterbar-1.1.2/test/test_pe_crypto.cpp	2017-03-01 23:52:15.239727880 +0000
+diff -ruN libtorrent-rasterbar-1.1.8.orig/test/test_pe_crypto.cpp libtorrent-rasterbar-1.1.8/test/test_pe_crypto.cpp
+--- libtorrent-rasterbar-1.1.8.orig/test/test_pe_crypto.cpp	2018-06-25 16:04:14.000000000 +0700
++++ libtorrent-rasterbar-1.1.8/test/test_pe_crypto.cpp	2018-06-25 19:22:54.566872136 +0700
 @@ -42,7 +42,7 @@
  #include "test.hpp"
  
