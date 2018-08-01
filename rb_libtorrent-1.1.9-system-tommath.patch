@@ -86,14 +86,14 @@ diff -ruN libtorrent-rasterbar-1.1.8.orig/src/Makefile.in libtorrent-rasterbar-1
  AM_CPPFLAGS = -DTORRENT_BUILDING_LIBRARY -I$(top_srcdir)/include -I$(top_srcdir)/ed25519/src @DEBUGFLAGS@ @OPENSSL_INCLUDES@
  AM_CFLAGS = -I$(top_srcdir)/ed25519/src -std=c99
  AM_LDFLAGS = @OPENSSL_LDFLAGS@
-@@ -929,7 +928,6 @@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magnet_uri.Plo@am__quote@ # am--include-marker
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/merkle.Plo@am__quote@ # am--include-marker
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/metadata_transfer.Plo@am__quote@ # am--include-marker
--@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpi.Plo@am__quote@ # am--include-marker
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/natpmp.Plo@am__quote@ # am--include-marker
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packet_buffer.Plo@am__quote@ # am--include-marker
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_url.Plo@am__quote@ # am--include-marker
+@@ -844,7 +844,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magnet_uri.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/merkle.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/metadata_transfer.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mpi.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/natpmp.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packet_buffer.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse_url.Plo@am__quote@
 diff -ruN libtorrent-rasterbar-1.1.8.orig/src/pe_crypto.cpp libtorrent-rasterbar-1.1.8/src/pe_crypto.cpp
 --- libtorrent-rasterbar-1.1.8.orig/src/pe_crypto.cpp	2018-06-25 16:04:14.000000000 +0700
 +++ libtorrent-rasterbar-1.1.8/src/pe_crypto.cpp	2018-06-25 19:22:54.555872083 +0700
