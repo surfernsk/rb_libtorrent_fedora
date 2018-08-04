@@ -1,0 +1,25 @@
+From 70d64327fd51f3952ec25e1957b7988d33423897 Mon Sep 17 00:00:00 2001
+From: arvidn <arvid@libtorrent.org>
+Date: Thu, 2 Aug 2018 02:00:01 +0200
+Subject: [PATCH] bump checking_mem_usage to be higher than the default in the
+ high_performance_seed preset
+
+---
+ src/session.cpp | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/session.cpp b/src/session.cpp
+index 7d8b4d58fe..76000de523 100644
+--- a/src/session.cpp
++++ b/src/session.cpp
+@@ -302,9 +302,7 @@ namespace {
+ 		// number of disk threads for low level file operations
+ 		set.set_int(settings_pack::aio_threads, 8);
+ 
+-		// keep 5 MiB outstanding when checking hashes
+-		// of a resumed file
+-		set.set_int(settings_pack::checking_mem_usage, 320);
++		set.set_int(settings_pack::checking_mem_usage, 2048);
+ 
+ 		// the disk cache performs better with the pool allocator
+ 		set.set_bool(settings_pack::use_disk_cache_pool, true);
