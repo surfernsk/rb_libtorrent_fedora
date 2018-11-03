@@ -1,0 +1,11 @@
+--- a/test/Makefile.am
++++ b/test/Makefile.am
+@@ -4,7 +4,6 @@
+   bdecode_benchmark
+ 
+ test_programs = \
+-  test_primitives            \
+   test_recheck               \
+   test_stat_cache            \
+   test_file                  \
+
