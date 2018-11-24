@@ -1,4 +1,4 @@
-%define gtag libtorrent-1_1_11
+%define gtag libtorrent_1_1_11
 %if 0%{?fedora} || 0%{?rhel} >= 8
 %bcond_without python3
 %else
