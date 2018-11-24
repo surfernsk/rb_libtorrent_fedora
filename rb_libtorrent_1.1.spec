@@ -1,4 +1,4 @@
-%define gtag libtorrent-1_1_10
+%define gtag libtorrent-1_1_11
 %if 0%{?fedora} || 0%{?rhel} >= 8
 %bcond_without python3
 %else
@@ -15,8 +15,8 @@
 %endif
 
 Name:		rb_libtorrent
-Version:	1.1.10
-Release:	2%{?dist}
+Version:	1.1.11
+Release:	1%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 Group:		System Environment/Libraries
@@ -278,6 +278,9 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %endif # with python3
 
 %changelog
+* Sat Nov 24 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.11-1
+- fix build fedora 29
+
 * Wed Aug 01 2018 Evgeny Lensky <surfernsk@gmail.com> - 1.1.10-2
 - fix build fedora 29
 
