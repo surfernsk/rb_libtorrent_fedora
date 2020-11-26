@@ -15,28 +15,30 @@
 
 
 Name:		rb_libtorrent
-Version:	1.2.5
+Version:	1.2.11
 Release:	1%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
 License:	BSD
 URL:		https://www.libtorrent.org
-Source0:	https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_2_5/libtorrent-rasterbar-%{version}.tar.gz
+Source0:	https://github.com/arvidn/libtorrent/releases/download/v%{version}/libtorrent-rasterbar-%{version}.tar.gz
 Source1:	%{name}-README-renames.Fedora
 Source2:	%{name}-COPYING.Boost
 Source3:	%{name}-COPYING.zlib
 
-%if 0%{?rhel}
+%if 0%{?rhel} && 0%{?rhel} < 8
 # aarch64 is broken and I have zero interest in fixing it
 ExcludeArch:	aarch64
 %endif
 
 BuildRequires:	asio-devel
 BuildRequires:	automake
+BuildRequires:	autoconf-archive
 BuildRequires:	boost-devel
 BuildRequires:	gcc-c++
+BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig(zlib)
-%if 0%{?fedora} < 31 || 0%{?rhel}
+%if 0%{?fedora} < 31 && 0%{?rhel} < 8
 BuildRequires:	pkgconfig(python2)
 %endif
 BuildRequires:	libtool
@@ -83,7 +85,7 @@ show how to make use of its various features. (Due to potential
 namespace conflicts, a couple of the examples had to be renamed. See the
 included documentation for more details.)
 
-%if 0%{?fedora} < 31 || 0%{?rhel}
+%if 0%{?fedora} < 31 && 0%{?rhel} < 8
 %package	python2
 Summary:	Python bindings for %{name}
 License:	Boost
@@ -122,6 +124,14 @@ Python applications.
 %setup -q -n "libtorrent-rasterbar-%{version}"
 sed -i -e 's|include/libtorrent/version.hpp|../include/libtorrent/version.hpp|' configure configure.ac
 
+# Remove the default debug flags as we provide our own
+sed -i -e 's|"-g0 -Os"|""|' configure configure.ac
+
+# Use c++14 to fix LTO issue with qbittorrent 
+# qbittorrent: symbol lookup error: qbittorrent: undefined symbol: _ZN10libtorrent5entryC1ESt3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES0_NS_3aux12strview_lessESaISt4pairIKS7_S0_EEE
+rm m4/ax_cxx_compile_stdcxx.m4 m4/ax_cxx_compile_stdcxx_11.m4
+sed -i -e 's|AX_CXX_COMPILE_STDCXX_11|AX_CXX_COMPILE_STDCXX_14|' configure.ac
+
 autoreconf -fiv
 
 ## The RST files are the sources used to create the final HTML files; and are
@@ -147,7 +157,7 @@ sed -i -e 's|"/lib /usr/lib|"/%{_lib} %{_libdir}|' configure
 mkdir -p build/bindings build-python3/bindings
 echo build/bindings build-python3/bindings | xargs -n 1 cp -r bindings/python
 
-%if 0%{?fedora} < 31 || 0%{?rhel}
+%if 0%{?fedora} < 31 && 0%{?rhel} < 8
 # Build the lib with Python 2 bindings
 export PYTHON=/usr/bin/python%{python2_version}
 pushd build
@@ -214,7 +224,7 @@ make V=1 %{?_smp_mflags}
 #cp ../test/*.{cpp,hpp,py,gz} ./test/
 #make %{?_smp_mflags} check
 #popd
-#%endif # with python3
+#%endif
 
 %install
 ## Ensure that we preserve our timestamps properly.
@@ -225,7 +235,7 @@ pushd build
 ## Do the renaming due to the somewhat limited %%_bindir namespace.
 rename client torrent_client %{buildroot}%{_bindir}/*
 
-%if 0%{?fedora} < 31 || 0%{?rhel}
+%if 0%{?fedora} < 31 && 0%{?rhel} < 8
 ## Install the python 2 binding module.
 pushd bindings/python
 %{__python2} setup.py install -O1 --skip-build --root %{buildroot}
@@ -259,6 +269,7 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %{_libdir}/pkgconfig/libtorrent-rasterbar.pc
 %{_includedir}/libtorrent/
 %{_libdir}/libtorrent-rasterbar.so
+%{_datadir}/cmake/Modules/FindLibtorrentRasterbar.cmake
 
 %files examples
 %doc README-renames.Fedora
@@ -272,7 +283,7 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %{_bindir}/stats_counters
 %{_bindir}/upnp_test
 
-%if 0%{?fedora} < 31 || 0%{?rhel}
+%if 0%{?fedora} < 31 && 0%{?rhel} < 8
 %files	python2
 %doc AUTHORS ChangeLog
 %license COPYING.Boost
@@ -289,5 +300,8 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %endif
 
 %changelog
+* Thu Nov 26 2020 Evgeny Lensky <surfernsk@gmail.com> - 1.2.11-1
+- release 1.2.11
+
 * Sat Mar 14 2020 leigh123linux <leigh123linux@googlemail.com> - 1.2.5-1
 - Upgrade to 1.2.5
