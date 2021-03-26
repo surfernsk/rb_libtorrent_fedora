@@ -4,18 +4,8 @@
 %bcond_with python3
 %endif
 
-# we don't want to provide private python extension libs
-%if 0%{?fedora} || 0%{?rhel} >= 7
-%global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\.so$
-%else
-%filter_provides_in %{python_sitearch}/.*\.so$
-# actually set up the filtering
-%filter_setup
-%endif
-
-
 Name:		rb_libtorrent
-Version:	1.2.11
+Version:	1.2.12
 Release:	1%{?dist}
 Summary:	A C++ BitTorrent library aiming to be the best alternative
 
@@ -32,16 +22,14 @@ ExcludeArch:	aarch64
 %endif
 
 BuildRequires:	asio-devel
-BuildRequires:	automake
-BuildRequires:	autoconf-archive
-BuildRequires:	boost-devel
+BuildRequires:	cmake
 BuildRequires:	gcc-c++
+BuildRequires:	ninja-build
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig(zlib)
 %if 0%{?fedora} < 31 && 0%{?rhel} < 8
 BuildRequires:	pkgconfig(python2)
 %endif
-BuildRequires:	libtool
 BuildRequires:	util-linux
 
 %description
@@ -118,21 +106,10 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 The %{name}-python3 package contains Python language bindings
 (the 'libtorrent' module) that allow it to be used from within
 Python applications.
-%endif
+%endif # with python3
 
 %prep
 %setup -q -n "libtorrent-rasterbar-%{version}"
-sed -i -e 's|include/libtorrent/version.hpp|../include/libtorrent/version.hpp|' configure configure.ac
-
-# Remove the default debug flags as we provide our own
-sed -i -e 's|"-g0 -Os"|""|' configure configure.ac
-
-# Use c++14 to fix LTO issue with qbittorrent 
-# qbittorrent: symbol lookup error: qbittorrent: undefined symbol: _ZN10libtorrent5entryC1ESt3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES0_NS_3aux12strview_lessESaISt4pairIKS7_S0_EEE
-rm m4/ax_cxx_compile_stdcxx.m4 m4/ax_cxx_compile_stdcxx_11.m4
-sed -i -e 's|AX_CXX_COMPILE_STDCXX_11|AX_CXX_COMPILE_STDCXX_14|' configure.ac
-
-autoreconf -fiv
 
 ## The RST files are the sources used to create the final HTML files; and are
 ## not needed.
@@ -145,50 +122,29 @@ install -p -m 0644 %{SOURCE3} COPYING.zlib
 iconv -t UTF-8 -f ISO_8859-15 AUTHORS -o AUTHORS.iconv
 mv AUTHORS.iconv AUTHORS
 
-# safer and less side-effects than using LIBTOOL=/usr/bin/libtool -- Rex
-# else, can use the autoreconf -i hammer
-%if "%{_libdir}" != "/usr/lib"
-sed -i -e 's|"/lib /usr/lib|"/%{_lib} %{_libdir}|' configure
-%endif
-
 %build
-%define _configure ../configure
-
-mkdir -p build/bindings build-python3/bindings
-echo build/bindings build-python3/bindings | xargs -n 1 cp -r bindings/python
-
+mkdir -p build build-python3
 %if 0%{?fedora} < 31 && 0%{?rhel} < 8
 # Build the lib with Python 2 bindings
 export PYTHON=/usr/bin/python%{python2_version}
 pushd build
-%configure \
-	--disable-static \
-	--enable-examples \
-	--enable-python-binding \
-	--with-boost-system=boost_system \
-	--with-boost-python=boost_python%{python2_version_nodots} \
-	--with-libiconv \
-	--enable-export-all
-%else
-# Build the lib with Python 3 bindings
-# This is ugly but can't think of an easier way to build the binding
-export CPPFLAGS="$CPPFLAGS $(python%{python3_version}-config --includes)"
-export LDFLAGS="$LDFLAGS -L%{_builddir}/libtorrent-rasterbar-%{version}/build/src/.libs"
-export PYTHON=/usr/bin/python%{python3_version}
-export PYTHON_LDFLAGS="$PYTHON_LDFLAGS $(python%{python3_version}-config --libs)"
-pushd build
-%configure \
-	--disable-static \
-	--enable-examples \
-	--enable-python-binding \
-	--with-boost-system=boost_system \
-	--with-boost-python=boost_python%{python3_version_nodots} \
-	--with-libiconv \
-	--enable-export-all
-%endif
-
-make V=1 %{?_smp_mflags}
+%cmake3 \
+	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+	-DCMAKE_CXX_STANDARD=14 \
+	-GNinja \
+	-Dbuild_examples=ON \
+	-Dbuild_tests=ON \
+	-Dbuild_tools=ON \
+	-Dpython-bindings=ON \
+	-Dpython-egg-info=ON \
+	-Dpython-install-system-dir=ON \
+	-DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python%{python2_version} \
+	..
+pushd %{_host}*
+%ninja_build
 popd
+popd
+%endif
 
 %if 0%{?with_python3}
 # This is ugly but can't think of an easier way to build the binding
@@ -198,62 +154,80 @@ export PYTHON=/usr/bin/python%{python3_version}
 export PYTHON_LDFLAGS="$PYTHON_LDFLAGS $(python%{python3_version}-config --libs)"
 
 pushd build-python3
-%configure \
-	--disable-static \
-	--enable-examples \
-	--enable-python-binding \
-	--with-boost-system=boost_system \
-	--with-boost-python=boost_python%{python3_version_nodots} \
-	--with-libiconv \
-	--enable-export-all
+%cmake3 \
+	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+	-DCMAKE_CXX_STANDARD=14 \
+	-GNinja \
+	-Dbuild_examples=ON \
+	-Dbuild_tests=ON \
+	-Dbuild_tools=ON \
+	-Dpython-bindings=ON \
+	-Dpython-egg-info=ON \
+	-Dpython-install-system-dir=ON \
+	..
 
-pushd bindings/python
-make V=1 %{?_smp_mflags}
+pushd %{_host}*
+%ninja_build
+popd
+popd
+%endif # with_python3
+
+%check
+%if 0%{?fedora} < 31 && 0%{?rhel} < 8
+pushd build/%{_host}*/test
+# Skip UPnP test as it requires a UPnP server on the same network, others due to aarch64 failures
+echo "set (CTEST_CUSTOM_TESTS_IGNORE
+  "test_upnp"
+  "test_flags"
+  "test_torrent"
+  "test_resume"
+)" > CTestCustom.cmake
+ctest %{?_smp_mflags}
+popd
+%endif
+%if 0%{?with_python3}
+pushd build-python3/%{_host}*/test
+# Skip UPnP test as it requires a UPnP server on the same network, others due to aarch64 failures
+echo "set (CTEST_CUSTOM_TESTS_IGNORE
+  "test_upnp"
+  "test_flags"
+  "test_torrent"
+  "test_resume"
+)" > CTestCustom.cmake
+ctest
+popd
 %endif
 
-#%check
-#pushd build
-#cp -Rp ../test/mutable_test_torrents ../test/test_torrents ./test/
-#cp ../test/*.{cpp,hpp,py,gz} ./test/
-#make %{?_smp_mflags} check
-#popd
-
-#%if %{with python3}
-#pushd build-python3
-#cp -Rp ../test/mutable_test_torrents ../test/test_torrents ./test/
-#cp ../test/*.{cpp,hpp,py,gz} ./test/
-#make %{?_smp_mflags} check
-#popd
-#%endif
-
 %install
-## Ensure that we preserve our timestamps properly.
-export CPPROG="%{__cp} -p"
-
-pushd build
-%{make_install}
-## Do the renaming due to the somewhat limited %%_bindir namespace.
-rename client torrent_client %{buildroot}%{_bindir}/*
+mkdir -p %{buildroot}%{_bindir}/
 
 %if 0%{?fedora} < 31 && 0%{?rhel} < 8
-## Install the python 2 binding module.
-pushd bindings/python
-%{__python2} setup.py install -O1 --skip-build --root %{buildroot}
-popd && popd
-%else
+pushd build/%{_host}*
+%ninja_install
+install -p -m 0755 \
+ examples/{client_test,connection_tester,custom_storage,dump_torrent,make_torrent,simple_client,stats_counters,upnp_test} \
+ tools/{dht,session_log_alerts} \
+ %{buildroot}%{_bindir}/
 popd
+sed -i 's/Version:.*/Version: %{version}/' %{python2_sitearch}/libtorrent.egg-info/PKG-INFO
 %endif
 
 %if 0%{?with_python3}
-pushd build-python3/bindings/python
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+pushd build-python3/%{_host}*
+%ninja_install
+install -p -m 0755 \
+ examples/{client_test,connection_tester,custom_storage,dump_torrent,make_torrent,simple_client,stats_counters,upnp_test} \
+ tools/{dht,session_log_alerts} \
+ %{buildroot}%{_bindir}/
 popd
-%endif
+# Written version is malformed
+sed -i 's/^Version:.*/Version: %{version}/' %{buildroot}%{python3_sitearch}/libtorrent.egg-info/PKG-INFO
+%endif # with python3
+
+## Do the renaming due to the somewhat limited %%_bindir namespace.
+rename client torrent_client %{buildroot}%{_bindir}/*
 
 install -p -m 0644 %{SOURCE1} ./README-renames.Fedora
-
-#Remove libtool archives.
-find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 
 %ldconfig_scriptlets
 
@@ -261,7 +235,8 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %{!?_licensedir:%global license %doc}
 %doc AUTHORS ChangeLog
 %license COPYING
-%{_libdir}/libtorrent-rasterbar.so.10*
+%{_libdir}/libtorrent-rasterbar.so.1.*
+%{_libdir}/libtorrent-rasterbar.so.10
 
 %files	devel
 %doc docs/
@@ -269,16 +244,16 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %{_libdir}/pkgconfig/libtorrent-rasterbar.pc
 %{_includedir}/libtorrent/
 %{_libdir}/libtorrent-rasterbar.so
+%{_libdir}/cmake/LibtorrentRasterbar/
 %{_datadir}/cmake/Modules/FindLibtorrentRasterbar.cmake
 
 %files examples
 %doc README-renames.Fedora
 %license COPYING
 %{_bindir}/*torrent*
-%{_bindir}/bt_ge*
 %{_bindir}/connection_tester
 %{_bindir}/custom_storage
-%{_bindir}/dht_put
+%{_bindir}/dht
 %{_bindir}/session_log_alerts
 %{_bindir}/stats_counters
 %{_bindir}/upnp_test
@@ -287,7 +262,7 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %files	python2
 %doc AUTHORS ChangeLog
 %license COPYING.Boost
-%{python2_sitearch}/python_libtorrent-%{version}-py2.?.egg-info
+%{python2_sitearch}/libtorrent.egg-info/
 %{python2_sitearch}/libtorrent.so
 %endif
 
@@ -295,11 +270,14 @@ find %{buildroot} -name '*.la' -or -name '*.a' | xargs rm -f
 %files	python3
 %doc AUTHORS ChangeLog
 %license COPYING.Boost
-%{python3_sitearch}/python_libtorrent-%{version}-py3.?.egg-info
+%{python3_sitearch}/libtorrent.egg-info/
 %{python3_sitearch}/libtorrent.cpython-*.so
-%endif
+%endif # with python3
 
 %changelog
+* Fri Mar 26 2021 Evgeny Lensky <surfernsk@gmail.com> - 1.2.12-1
+- release 1.2.12
+
 * Thu Nov 26 2020 Evgeny Lensky <surfernsk@gmail.com> - 1.2.11-1
 - release 1.2.11
 
